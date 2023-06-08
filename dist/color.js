@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.namedColors = exports.getHexColor = exports.detectColorsFromHTMLString = exports.detectColorsFromDraftState = void 0;
 var _namedColors = {
   "aliceblue": "#f0f8ff",
   "antiquewhite": "#faebd7",
@@ -146,47 +147,38 @@ var _namedColors = {
   "yellow": "#ffff00",
   "yellowgreen": "#9acd32"
 };
-
 var _getHexColor = function _getHexColor(color) {
-
   color = color.replace('color:', '').replace(';', '').replace(' ', '');
-
   if (/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(color)) {
     return color;
   } else if (namedColors[color]) {
     return namedColors[color];
   } else if (color.indexOf('rgb') === 0) {
-
     var rgbArray = color.split(',');
     var convertedColor = rgbArray.length < 3 ? null : '#' + [rgbArray[0], rgbArray[1], rgbArray[2]].map(function (x) {
       var hex = parseInt(x.replace(/\D/g, ''), 10).toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     }).join('');
-
-    return (/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(convertedColor) ? convertedColor : null
-    );
+    return /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/.test(convertedColor) ? convertedColor : null;
   } else {
     return null;
   }
 };
-
-var namedColors = exports.namedColors = _namedColors;
-var getHexColor = exports.getHexColor = _getHexColor;
-
-var detectColorsFromHTMLString = exports.detectColorsFromHTMLString = function detectColorsFromHTMLString(html) {
+var namedColors = _namedColors;
+exports.namedColors = namedColors;
+var getHexColor = _getHexColor;
+exports.getHexColor = getHexColor;
+var detectColorsFromHTMLString = function detectColorsFromHTMLString(html) {
   return typeof html !== 'string' ? [] : (html.match(/color:[^;]{3,24};/g) || []).map(getHexColor).filter(function (color) {
     return color;
   });
 };
-
-var detectColorsFromDraftState = exports.detectColorsFromDraftState = function detectColorsFromDraftState(draftState) {
-
+exports.detectColorsFromHTMLString = detectColorsFromHTMLString;
+var detectColorsFromDraftState = function detectColorsFromDraftState(draftState) {
   var result = [];
-
   if (!draftState || !draftState.blocks || !draftState.blocks.length) {
     return result;
   }
-
   draftState.blocks.forEach(function (block) {
     if (block && block.inlineStyleRanges && block.inlineStyleRanges.length) {
       block.inlineStyleRanges.forEach(function (inlineStyle) {
@@ -196,8 +188,8 @@ var detectColorsFromDraftState = exports.detectColorsFromDraftState = function d
       });
     }
   });
-
   return result.filter(function (color) {
     return color;
   });
 };
+exports.detectColorsFromDraftState = detectColorsFromDraftState;
